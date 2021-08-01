@@ -4,6 +4,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Dyabp.Cds.Data;
 using Volo.Abp.DependencyInjection;
+using Volo.Abp.MultiTenancy;
 
 namespace Dyabp.Cds.EntityFrameworkCore
 {
@@ -26,8 +27,16 @@ namespace Dyabp.Cds.EntityFrameworkCore
              * current scope.
              */
 
-            await _serviceProvider
-                .GetRequiredService<CdsDbContext>()
+            //await _serviceProvider
+            //    .GetRequiredService<CdsDbContext>()
+            //    .Database
+            //    .MigrateAsync();
+
+            var dbContextType = _serviceProvider.GetRequiredService<ICurrentTenant>().IsAvailable
+                ? typeof(CdsTenantDbContext)
+                : typeof(CdsDbContext);
+
+            await ((DbContext)_serviceProvider.GetRequiredService(dbContextType))
                 .Database
                 .MigrateAsync();
         }

@@ -5,17 +5,17 @@ using Volo.Abp.MultiTenancy;
 namespace Dyabp.Cds.EntityFrameworkCore
 {
     [ConnectionStringName("Default")]
-    public class CdsDbContext :
-       CdsDbContextBase<CdsDbContext>
+    public class CdsTenantDbContext :
+       CdsDbContextBase<CdsTenantDbContext>
     {
-        public CdsDbContext(DbContextOptions<CdsDbContext> options)
+        public CdsTenantDbContext(DbContextOptions<CdsTenantDbContext> options)
             : base(options)
         {
         }
 
         protected override void OnModelCreating(ModelBuilder builder)
         {
-            builder.SetMultiTenancySide(MultiTenancySides.Both);
+            builder.SetMultiTenancySide(MultiTenancySides.Tenant);
 
             base.OnModelCreating(builder);
         }
