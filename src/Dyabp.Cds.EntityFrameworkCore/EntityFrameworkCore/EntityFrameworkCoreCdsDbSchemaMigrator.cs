@@ -30,6 +30,11 @@ namespace Dyabp.Cds.EntityFrameworkCore
                 .GetRequiredService<CdsDbContext>()
                 .Database
                 .MigrateAsync();
+
+            await _serviceProvider
+                .GetRequiredService<CdsSecondDbContext>()
+                .Database
+                .MigrateAsync();
         }
     }
 }

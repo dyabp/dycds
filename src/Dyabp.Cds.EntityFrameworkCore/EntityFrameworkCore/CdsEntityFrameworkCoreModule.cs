@@ -47,6 +47,8 @@ namespace Dyabp.Cds.EntityFrameworkCore
                  * See also CdsMigrationsDbContextFactory for EF Core tooling. */
                 options.UseSqlServer();
             });
+
+            context.Services.AddAbpDbContext<CdsSecondDbContext>();
         }
     }
 }

@@ -7,6 +7,7 @@ using Volo.Abp;
 using Volo.Abp.EntityFrameworkCore;
 using Volo.Abp.EntityFrameworkCore.Sqlite;
 using Volo.Abp.Modularity;
+using Volo.Abp.Uow;
 
 namespace Dyabp.Cds.EntityFrameworkCore
 {
@@ -22,6 +23,11 @@ namespace Dyabp.Cds.EntityFrameworkCore
         public override void ConfigureServices(ServiceConfigurationContext context)
         {
             ConfigureInMemorySqlite(context.Services);
+
+            Configure<AbpUnitOfWorkDefaultOptions>(options =>
+            {
+                options.TransactionBehavior = UnitOfWorkTransactionBehavior.Disabled;
+            });
         }
 
         private void ConfigureInMemorySqlite(IServiceCollection services)
@@ -55,6 +61,17 @@ namespace Dyabp.Cds.EntityFrameworkCore
             {
                 context.GetService<IRelationalDatabaseCreator>().CreateTables();
             }
+
+            // Add the following code --------------
+            var optionsForSecondDb = new DbContextOptionsBuilder<CdsSecondDbContext>()
+                .UseSqlite(connection)
+                .Options;
+
+            using (var context = new CdsSecondDbContext(optionsForSecondDb))
+            {
+                context.GetService<IRelationalDatabaseCreator>().CreateTables();
+            }
+            //--------------------------------------
 
             return connection;
         }
